@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class TurnController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
+}
+
+[System.Serializable]
+public class King {
+	public float raha;
+	public float suosio;
+	public float rauha;
+	public List<CardScript> cards;
+
+	public King() {
+		cards = new List<CardScript>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void Upkeep(){
+		foreach(CardScript cs in cards) {
+			raha += cs.raha;
+			rauha += cs.rauha;
+			suosio += cs.suosio;
+		}
 	}
 }
