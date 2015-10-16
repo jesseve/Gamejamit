@@ -5,11 +5,13 @@ using System.Collections.Generic;
 
 public class TurnController : MonoBehaviour {
 
-	public List<CardScript> possibleCards;
+	public List<Card> possibleCards;
 
 	public int playerCount = 3;
 
 	public List<King> kings;
+
+	public RectTransform[] cardPositions;
 
 	private List<CardScript> cardsOnTable;
 
@@ -20,9 +22,14 @@ public class TurnController : MonoBehaviour {
 		}
 
 		cardsOnTable = new List<CardScript>();
-		cardsOnTable.Add(possibleCards[0]);
-		cardsOnTable.Add(possibleCards[0]);
-		cardsOnTable.Add(possibleCards[0]);
+		cardsOnTable.Add(new CardScript());
+		cardsOnTable.Add(new CardScript());
+		cardsOnTable.Add(new CardScript());
+
+		cardsOnTable[0].transform.SetParent(cardPositions[0]);
+		cardsOnTable[1].transform.SetParent(cardPositions[1]);
+		cardsOnTable[2].transform.SetParent(cardPositions[2]);
+
 		StartTurn();
 	}
 
@@ -37,21 +44,21 @@ public class TurnController : MonoBehaviour {
 		StartTurn();
 	}
 	public void ClickCard(CardScript card) {
-		kings[0].DrawCard(card);
+		kings[0].DrawCard(card.card);
 		int id = cardsOnTable.IndexOf(card);
 		switch(id)
 		{
 		case 0:
-			kings[1].DrawCard(cardsOnTable[1]);
-			kings[2].DrawCard(cardsOnTable[2]);
+			kings[1].DrawCard(cardsOnTable[1].card);
+			kings[2].DrawCard(cardsOnTable[2].card);
 			break;
 		case 1:
-			kings[0].DrawCard(cardsOnTable[0]);
-			kings[2].DrawCard(cardsOnTable[2]);
+			kings[0].DrawCard(cardsOnTable[0].card);
+			kings[2].DrawCard(cardsOnTable[2].card);
 			break;
 		case 2:
-			kings[0].DrawCard(cardsOnTable[0]);
-			kings[1].DrawCard(cardsOnTable[1]);
+			kings[0].DrawCard(cardsOnTable[0].card);
+			kings[1].DrawCard(cardsOnTable[1].card);
 			break;
 		}
 		EndTurn ();
@@ -59,8 +66,8 @@ public class TurnController : MonoBehaviour {
 
 	private void NewCards() {
 		for(int i = 0; i < 3; i++) {
-			CardScript c = possibleCards[Random.Range (0, possibleCards.Count)];
-			cardsOnTable[i] = c;
+			Card c = possibleCards[Random.Range (0, possibleCards.Count)];
+			cardsOnTable[i].card = c;
 		}
 	}
 }
@@ -70,20 +77,20 @@ public class King {
 	public float raha;
 	public float suosio;
 	public float rauha;
-	public List<CardScript> cards;
+	public List<Card> cards;
 
 	public King() {
-		cards = new List<CardScript>();
+		cards = new List<Card>();
 	}
 
 	public void Upkeep(){
-		foreach(CardScript cs in cards) {
+		foreach(Card cs in cards) {
 			raha += cs.raha;
 			rauha += cs.rauha;
 			suosio += cs.suosio;
 		}
 	}
-	public void DrawCard(CardScript card) {
+	public void DrawCard(Card card) {
 		cards.Add(card);
 	}
 }
