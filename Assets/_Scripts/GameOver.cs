@@ -5,51 +5,55 @@ using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour {
 
+	public Sprite defeat;
+	public Sprite victory;
+
+	public Image background;
+	public Image winning;
 	public Button restartButton;
-	public Text firstKing;
-	public Text secondKing;
-	public Text thirdKing;
+	public Text winner;
 	private List<King> kings;
 	private GameManager manager;
 
 	void Start() {
 		manager = GameObject.FindObjectOfType<GameManager>();
-		kings = manager.gameOverKings;
 		restartButton.onClick.AddListener(() => manager.StartGame());
-		UpdateValues();
+		for(int i = 0; i < transform.childCount; i++) {
+			transform.GetChild(i).gameObject.SetActive(false);
+		}
 	}
 
 	public void UpdateValues() {
+		StartCoroutine(ShowGameOver());
+		kings = manager.gameOverKings;
 		if(kings[0] > kings[1] && kings[0] > kings[2])
 		{	
-			firstKing.text = kings[0].name;
-			if(kings[1] > kings[2]) {
-				secondKing.text = kings[1].name;
-				thirdKing.text = kings[2].name;
-			}else {
-				secondKing.text = kings[2].name;
-				thirdKing.text = kings[1].name;
-			}
-		} else if(kings[1] > kings[0] && kings[1] > kings[2])
-		{	
-			firstKing.text = kings[1].name;
-			if(kings[0] > kings[2]) {
-				secondKing.text = kings[0].name;
-				thirdKing.text = kings[2].name;
-			}else {
-				secondKing.text = kings[2].name;
-				thirdKing.text = kings[0].name;
-			}
+			winner.text = kings[0].name;
+			winning.sprite = victory;
 		}
-		else {
-			firstKing.text = kings[2].name;
-			if(kings[0] > kings[1]) {
-				secondKing.text = kings[0].name;
-				thirdKing.text = kings[1].name;
-			}else {
-				secondKing.text = kings[1].name;
-				thirdKing.text = kings[0].name;
-			}
+		else if(kings[1] > kings[0] && kings[1] > kings[2]) {
+			winner.text = kings[1].name;
+			winning.sprite = defeat;
 		}
+		else if(kings[2] > kings[0] && kings[2] > kings[1]) {
+			winner.text = kings[2].name;
+			winning.sprite = defeat;
+		}
+	}
+	private IEnumerator ShowGameOver() {
+		for(int i = 0; i < transform.childCount; i++) {
+			transform.GetChild(i).gameObject.SetActive(true);
+		}
+		Color c = background.color;
+		c.a = 0;
+		background.color = c;
+		float f = 220.0f/255;
+		while(c.a < f) {
+			c.a += 0.02f;
+			background.color = c;
+			yield return new WaitForSeconds(0.02f);
+		}
+
+
 	}
 }

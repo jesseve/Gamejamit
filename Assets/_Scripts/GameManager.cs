@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,11 +16,13 @@ public class GameManager : MonoBehaviour {
 	public AudioSource sound1;
 	public AudioSource sound2;
 
+	private GameOver gameOver;
 	private static GameManager instance;
 
-	void Start() {
+	void Awake() {
 		DontDestroyOnLoad(gameObject);
 		instance = this;
+		gameOver = GameObject.FindObjectOfType<GameOver>();
 	}
 
 	public void StartGame() {
@@ -34,7 +37,11 @@ public class GameManager : MonoBehaviour {
 		Debug.Log ("Game over");
 		gameOverKings = kings;
 
-		Application.LoadLevel("GameOver");
+		Button[] bs = GameObject.FindObjectsOfType<Button>();
+		foreach(Button b in bs)
+			b.interactable = false;
+		gameOver = GameObject.FindObjectOfType<GameOver>();
+		gameOver.UpdateValues();
 	}
 
 	public static void PlayScream() {
