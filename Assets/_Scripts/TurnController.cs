@@ -17,6 +17,7 @@ public class TurnController : MonoBehaviour {
 	
 	public List<CardScript> cardsOnTable;
 
+	private GameManager gameManger;
 	private int turn;
 	private PlayerHand playerHand;
 	private PlayerStatus playerStatus;
@@ -31,6 +32,7 @@ public class TurnController : MonoBehaviour {
 		playerStatus = GameObject.FindObjectOfType<PlayerStatus>();
 		playerHand = GameObject.FindObjectOfType<PlayerHand>();
 		updateStatus = GameObject.FindObjectOfType<UpdateStatus>();
+		gameManger = GameObject.FindObjectOfType<GameManager>();
 
 		StartTurn();
 	}
@@ -87,8 +89,11 @@ public class TurnController : MonoBehaviour {
 		EndTurn ();
 	}
 
-	private void EndGame() {
+	private IEnumerator EndGame() {
 		gameOver = true;
+		updateStatus.UpdateValues(kings);
+		yield return new WaitForSeconds(2f);
+		gameManger.GameOver(kings);
 	}
 	private void NewCards() {
 		for(int i = 0; i < 3; i++) {

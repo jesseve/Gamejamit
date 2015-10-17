@@ -20,21 +20,21 @@ public class CardScript : MonoBehaviour {
 		stat3.text = card.rauha.ToString();
 
 		if(card.raha > 0) 
-			stat1.color = Color.green;		
+			stat1.color = new Color(33,166,0);		
 		else if(card.raha < 0) 
 			stat1.color = Color.red;
 		else
 			stat1.color = Color.black;
 
 		if(card.suosio > 0) 
-			stat2.color = Color.green;		
+			stat2.color = new Color(33,166,0);		
 		else if(card.suosio < 0) 
 			stat2.color = Color.red;
 		else
 			stat2.color = Color.black;
 
 		if(card.rauha > 0) 
-			stat3.color = Color.green;		
+			stat3.color = new Color(33,166,0);		
 		else if(card.rauha < 0) 
 			stat3.color = Color.red;
 		else
