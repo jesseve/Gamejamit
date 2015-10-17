@@ -18,6 +18,7 @@ public class PlayerStatus : MonoBehaviour {
     public Text peopleNumber;
     public Text peaceNumber;
     
+	public Text upkeep1, upkeep2, upkeep3;
 
     //int military;
 
@@ -29,14 +30,19 @@ public class PlayerStatus : MonoBehaviour {
 
     public void EndOfTurn()
     {
-        wealth = (int)turnCtrl.kings[0].raha;
-		favorPeople = (int)turnCtrl.kings[0].suosio;
-		peace = (int)turnCtrl.kings[0].rauha;
-        //peace = favorPeople;// + military;
-        wealthNumber.text = wealth.ToString();
+		King k = turnCtrl.kings[0];
+
+        wealth = (int)k.raha;
+		favorPeople = (int)k.suosio;
+		peace = (int)k.rauha;
+
+		wealthNumber.text = wealth.ToString();
         peopleNumber.text = favorPeople.ToString();
         peaceNumber.text = peace.ToString();
         
+		upkeep1.text = k.ukRaha.ToString();
+		upkeep2.text = k.ukSuosio.ToString();
+		upkeep3.text = k .ukRauha.ToString();
 
         //Military upkeep:
         //wealth -= military * 10;

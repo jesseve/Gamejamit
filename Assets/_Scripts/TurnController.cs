@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 
 public class TurnController : MonoBehaviour {
 
+	public Text hintText;
 
 	public int turnTime = 10;
 	public int maxTurns = 99;
@@ -34,38 +36,72 @@ public class TurnController : MonoBehaviour {
 		updateStatus = GameObject.FindObjectOfType<UpdateStatus>();
 		gameManger = GameObject.FindObjectOfType<GameManager>();
 
+		NewCards();
+		foreach(CardScript cs in cardsOnTable) {
+			cs.GetComponent<Button>().interactable = false;
+			cs.gameObject.SetActive(false);
+		}
+
+		Invoke ("StartGame", 2);
+	}
+
+	private void StartGame() {
+		foreach(CardScript cs in cardsOnTable) {
+			cs.GetComponent<Button>().interactable = true;
+			cs.gameObject.SetActive(true);
+		}
 		StartTurn();
 	}
 
-	public void StartTurn() {
+	public void StartTurn() 
+	{
+		if(gameOver == true) return;
 		turn++;
 		NewCards ();
-		foreach(King k in kings){
-			if(k.lostGame == false)
-				k.Upkeep();
+		hintText.text = "Choose a card";
+
+		if(turn % 5 == 0) {
+			EliminationRound();
 		}
-		updateStatus.UpdateValues(kings);
-		StartCoroutine(TurnTimer());
+		else 
+			StartCoroutine(TurnTimer());
 	}
 
 	public void EndTurn() {
-		playerStatus.EndOfTurn();
 		if(turn >= maxTurns) {
-			EndGame();
+			StartCoroutine(EndGame());
 		}
+
+		if(gameOver == true) return;
 		else {
-			foreach(King k in kings) {
-				if(k.raha <= 0 || k.rauha <= 0 || k.suosio <= 0)
+
+			foreach(King k in kings){
+				if(k.lostGame == false)
+					k.Upkeep();
+
+				if(k.raha <= 0 || k.rauha <= 0 || k.suosio <= 0) {
 					k.LoseGame();
+					playerCount --;
+				}
+				if(playerCount <= 1)
+					StartCoroutine(EndGame());
 			}
+
+			foreach(CardScript cs in cardsOnTable) {
+				cs.GetComponent<Button>().interactable = true;
+			}
+
 			if(kings[0].lostGame == true || (kings[1].lostGame && kings[2].lostGame))
-				EndGame();
+				StartCoroutine(EndGame());
 			else
 				StartTurn();
 		}
+		updateStatus.UpdateValues(kings);
+		playerStatus.EndOfTurn();
 	}
 
 	public void ClickCard(CardScript card) {
+		if(gameOver == true) return;
 		int id = cardsOnTable.IndexOf(card);
 		playerHand.AddCard(card.card);
 		switch(id)
@@ -91,11 +127,25 @@ public class TurnController : MonoBehaviour {
 
 	private IEnumerator EndGame() {
 		gameOver = true;
+		foreach(CardScript cs in cardsOnTable) {
+			cs.GetComponent<Button>().interactable = false;
+		}
 		updateStatus.UpdateValues(kings);
 		yield return new WaitForSeconds(2f);
 		gameManger.GameOver(kings);
 	}
+
+	private void EliminationRound() {
+		if(gameOver == true) return;
+		hintText.text = "Choose a citizen to hang";
+		foreach(CardScript cs in cardsOnTable) {
+			cs.GetComponent<Button>().interactable = false;
+		}
+		playerHand.EliminationRound();
+	}
+
 	private void NewCards() {
+		if(gameOver == true) return;
 		for(int i = 0; i < 3; i++) {
 			Card c = possibleCards[Random.Range (0, possibleCards.Count)];
 			cardsOnTable[i].ChangeCard(c);
@@ -112,7 +162,7 @@ public class TurnController : MonoBehaviour {
 			yield return new WaitForSeconds(0.1f);
 		}
 
-		if(turn == t) {
+		if(turn == t && gameOver == false) {
 			//Player did not act in time
 			ClickCard(cardsOnTable[Random.Range(0,3)]);
 		}
@@ -127,6 +177,11 @@ public class King {
 	public float rauha = 20;
 	public List<Card> cards;
 	public bool lostGame = false;
+
+	public float ukRaha;
+	public float ukSuosio;
+	public float ukRauha;
+
 	public float Values {
 		get { return (raha + suosio + rauha); }
 	}
@@ -134,6 +189,14 @@ public class King {
 	public King(string name) {
 		cards = new List<Card>();
 		this.name = name;
+
+		ukRaha = ukRauha = ukSuosio = 0;
+	}
+	public void Eliminate(Card card) {
+		cards.Remove (card);
+		ukRaha -= card.raha;
+		ukRauha -= card.rauha;
+		ukSuosio -= card.suosio;
 	}
 
 	public void Upkeep(){
@@ -144,9 +207,72 @@ public class King {
 		}
 	}
 	public void DrawCard(Card card) {
+		if(lostGame == true) return;
 		cards.Add(card);
+		ukRaha += card.raha;
+		ukRauha += card.rauha;
+		ukSuosio += card.suosio;
 	}
 	public void LoseGame() {
 		lostGame = true;
+	}
+
+	public static bool operator < (King k1, King k2) {
+		if(k1.raha > 0 && k1.suosio > 0 && k1.rauha > 0){
+			if(k2.raha <= 0 || k2.rauha <= 0 || k2.suosio <= 0)
+				return false;
+			else
+			{
+				float f1 = k1.raha + k1.rauha + k1.suosio;
+				float f2 = k2.raha + k2.rauha + k2.suosio;
+				if(f1 < f2)
+					return true;
+				else 
+					return false;
+			}
+		}
+		else {
+			if(k2.raha > 0 || k2.rauha > 0 || k2.suosio > 0) {
+				return true;
+			}
+			else
+			{
+				float f1 = k1.raha + k1.rauha + k1.suosio;
+				float f2 = k2.raha + k2.rauha + k2.suosio;
+				if(f1 < f2)
+					return true;
+				else 
+					return false;
+			}
+		}
+	}
+	public static bool operator > (King k1, King k2) {
+		if(k1.raha > 0 && k1.suosio > 0 && k1.rauha > 0){
+			if(k2.raha <= 0 || k2.rauha <= 0 || k2.suosio <= 0)
+				return true;
+			else
+			{
+				float f1 = k1.raha + k1.rauha + k1.suosio;
+				float f2 = k2.raha + k2.rauha + k2.suosio;
+				if(f1 < f2)
+					return false;
+				else 
+					return true;
+			}
+		}
+		else {
+			if(k2.raha > 0 || k2.rauha > 0 || k2.suosio > 0) {
+				return false;
+			}
+			else
+			{
+				float f1 = k1.raha + k1.rauha + k1.suosio;
+				float f2 = k2.raha + k2.rauha + k2.suosio;
+				if(f1 < f2)
+					return false;
+				else 
+					return true;
+			}
+		}
 	}
 }
