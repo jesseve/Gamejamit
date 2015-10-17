@@ -4,33 +4,51 @@ using System.Collections;
 
 public class CardScript : MonoBehaviour {
 
+	//public Text nameText;
 	public Image cardImage;
-	public Image stat1, stat2, stat3;
+	public Text stat1, stat2, stat3;
 
 	public Card card;
-	// Use this for initialization
-	void Start () {
-		stat1.fillAmount = card.raha;
-		stat2.fillAmount = card.suosio;
-		stat3.fillAmount = card.rauha;
-	}
 
 	public void ChangeCard(Card card) {
 		this.card = card;
 
+		//nameText.text = card.name;
 		cardImage.sprite = card.sprite;
-		stat1.fillAmount = card.raha;
-		stat2.fillAmount = card.suosio;
-		stat3.fillAmount = card.rauha;
+		stat1.text = card.raha.ToString();
+		stat2.text = card.suosio.ToString();
+		stat3.text = card.rauha.ToString();
+
+		if(card.raha > 0) 
+			stat1.color = Color.green;		
+		else if(card.raha < 0) 
+			stat1.color = Color.red;
+		else
+			stat1.color = Color.black;
+
+		if(card.suosio > 0) 
+			stat2.color = Color.green;		
+		else if(card.suosio < 0) 
+			stat2.color = Color.red;
+		else
+			stat2.color = Color.black;
+
+		if(card.rauha > 0) 
+			stat3.color = Color.green;		
+		else if(card.rauha < 0) 
+			stat3.color = Color.red;
+		else
+			stat3.color = Color.black;
 	}
 }
 
 [System.Serializable]
 public class Card {
+	public string name = "Not Set";
 	public Sprite sprite;
 
-	[Range(-1,1)] public float raha;
-	[Range(-1,1)] public float rauha;
-	[Range(-1,1)] public float suosio;
+	[Range(-10,10)] public int raha;
+	[Range(-10,10)] public int rauha;
+	[Range(-10,10)] public int suosio;
 
 }
