@@ -10,25 +10,14 @@ public class TurnController : MonoBehaviour {
 	public int playerCount = 3;
 
 	public List<King> kings;
-
-	public RectTransform[] cardPositions;
-
-	private List<CardScript> cardsOnTable;
+	
+	public List<CardScript> cardsOnTable;
 
 	void Start() {
 		kings = new List<King>();
 		for(int i = 0; i < playerCount; i++) {
 			kings.Add(new King());
 		}
-
-		cardsOnTable = new List<CardScript>();
-		cardsOnTable.Add(new CardScript());
-		cardsOnTable.Add(new CardScript());
-		cardsOnTable.Add(new CardScript());
-
-		cardsOnTable[0].transform.SetParent(cardPositions[0]);
-		cardsOnTable[1].transform.SetParent(cardPositions[1]);
-		cardsOnTable[2].transform.SetParent(cardPositions[2]);
 
 		StartTurn();
 	}
@@ -44,21 +33,24 @@ public class TurnController : MonoBehaviour {
 		StartTurn();
 	}
 	public void ClickCard(CardScript card) {
-		kings[0].DrawCard(card.card);
 		int id = cardsOnTable.IndexOf(card);
+		Debug.Log ("ID: " + id);
 		switch(id)
 		{
 		case 0:
+			kings[0].DrawCard(cardsOnTable[0].card);
 			kings[1].DrawCard(cardsOnTable[1].card);
 			kings[2].DrawCard(cardsOnTable[2].card);
 			break;
 		case 1:
-			kings[0].DrawCard(cardsOnTable[0].card);
+			kings[0].DrawCard(cardsOnTable[1].card);
+			kings[1].DrawCard(cardsOnTable[0].card);
 			kings[2].DrawCard(cardsOnTable[2].card);
 			break;
 		case 2:
-			kings[0].DrawCard(cardsOnTable[0].card);
-			kings[1].DrawCard(cardsOnTable[1].card);
+			kings[0].DrawCard(cardsOnTable[2].card);
+			kings[1].DrawCard(cardsOnTable[0].card);
+			kings[2].DrawCard(cardsOnTable[1].card);
 			break;
 		}
 		EndTurn ();
@@ -67,7 +59,7 @@ public class TurnController : MonoBehaviour {
 	private void NewCards() {
 		for(int i = 0; i < 3; i++) {
 			Card c = possibleCards[Random.Range (0, possibleCards.Count)];
-			cardsOnTable[i].card = c;
+			cardsOnTable[i].ChangeCard(c);
 		}
 	}
 }
