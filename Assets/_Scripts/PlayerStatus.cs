@@ -37,9 +37,9 @@ public class PlayerStatus : MonoBehaviour {
 
     public void EndOfTurn()
     {
-        wealth = (int)turnCtrl.kings[0].raha;
-        favorPeople = (int)turnCtrl.kings[0].suosio;
-        peace = (int)turnCtrl.kings[0].rauha;
+        wealth = (int)turnCtrl.kings[0].raha * 100;
+		favorPeople = (int)turnCtrl.kings[0].suosio * 100;
+		peace = (int)turnCtrl.kings[0].rauha * 100;
         peace = favorPeople;// + military;
         wealthNumber.text = wealth.ToString();
         //kingNumber.text = favorKing.ToString();

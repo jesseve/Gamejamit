@@ -13,11 +13,14 @@ public class TurnController : MonoBehaviour {
 	
 	public List<CardScript> cardsOnTable;
 
+	private PlayerStatus playerStatus;
+
 	void Start() {
 		kings = new List<King>();
 		for(int i = 0; i < playerCount; i++) {
 			kings.Add(new King());
 		}
+		playerStatus = GameObject.FindObjectOfType<PlayerStatus>();
 
 		StartTurn();
 	}
@@ -30,6 +33,7 @@ public class TurnController : MonoBehaviour {
 	}
 
 	public void EndTurn() {
+		playerStatus.EndOfTurn();
 		StartTurn();
 	}
 	public void ClickCard(CardScript card) {
