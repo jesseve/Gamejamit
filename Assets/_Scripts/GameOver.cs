@@ -7,6 +7,7 @@ public class GameOver : MonoBehaviour {
 
 	public Sprite defeat;
 	public Sprite victory;
+	public Animator animator;
 
 	public Image background;
 	public Image winning;
@@ -14,6 +15,7 @@ public class GameOver : MonoBehaviour {
 	public Text winner;
 	private List<King> kings;
 	private GameManager manager;
+
 
 	void Start() {
 		manager = GameObject.FindObjectOfType<GameManager>();
@@ -24,7 +26,14 @@ public class GameOver : MonoBehaviour {
 	}
 
 	public void UpdateValues() {
-		StartCoroutine(ShowGameOver());
+		//StartCoroutine(ShowGameOver());
+		for(int i = 0; i < transform.childCount; i++) {
+			transform.GetChild(i).gameObject.SetActive(true);
+		}
+		restartButton.interactable = true;
+
+		animator.Play ("GameOver");
+
 		kings = manager.gameOverKings;
 		if(kings[0] > kings[1] && kings[0] > kings[2])
 		{	

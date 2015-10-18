@@ -141,7 +141,7 @@ public class TurnController : MonoBehaviour {
 	private void EliminationRound() {
 		if(gameOver == true) return;
 		StartCoroutine(TurnTimer(true));
-		hintText.text = "Choose a citizen to hang";
+		hintText.text = "Sacrifice a citizen";
 		foreach(CardScript cs in cardsOnTable) {
 			cs.GetComponent<Button>().interactable = false;
 		}
