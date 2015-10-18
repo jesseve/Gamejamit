@@ -72,7 +72,7 @@ public class TurnController : MonoBehaviour {
 		if(turn >= maxTurns) {
 			StartCoroutine(EndGame());
 		}
-
+		cardsOnTable[0].transform.parent.gameObject.SetActive(true);
 		if(gameOver == true) return;
 		else {
 
@@ -140,8 +140,9 @@ public class TurnController : MonoBehaviour {
 
 	private void EliminationRound() {
 		if(gameOver == true) return;
+		cardsOnTable[0].transform.parent.gameObject.SetActive(false);
 		StartCoroutine(TurnTimer(true));
-		hintText.text = "Sacrifice a citizen";
+		hintText.text = "Behead a citizen!";
 		foreach(CardScript cs in cardsOnTable) {
 			cs.GetComponent<Button>().interactable = false;
 		}
