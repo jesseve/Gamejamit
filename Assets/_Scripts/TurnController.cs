@@ -137,6 +137,7 @@ public class TurnController : MonoBehaviour {
 
 	private void EliminationRound() {
 		if(gameOver == true) return;
+		StartCoroutine(TurnTimer(true));
 		hintText.text = "Choose a citizen to hang";
 		foreach(CardScript cs in cardsOnTable) {
 			cs.GetComponent<Button>().interactable = false;
@@ -152,7 +153,7 @@ public class TurnController : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator TurnTimer() {
+	private IEnumerator TurnTimer(bool elimination = false) {
 		int t = turn;
 		float f = turnTime;
 
@@ -164,7 +165,10 @@ public class TurnController : MonoBehaviour {
 
 		if(turn == t && gameOver == false) {
 			//Player did not act in time
-			ClickCard(cardsOnTable[Random.Range(0,3)]);
+			if(elimination == false)
+				ClickCard(cardsOnTable[Random.Range(0,3)]);
+			else
+				playerHand.EliminateRandom();
 		}
 	}
 }

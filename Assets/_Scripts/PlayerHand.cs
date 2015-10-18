@@ -41,6 +41,9 @@ public class PlayerHand : MonoBehaviour {
 		GameManager.PlayScream();
 		tc.EndTurn();
 	}
+	public void EliminateRandom() {
+		Eliminate (cards[Random.Range (0, cards.Count)]);
+	}
 	public void EliminationRound() {
 		foreach(Button b in buttons) {
 			if(b == null)
