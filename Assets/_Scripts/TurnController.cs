@@ -41,7 +41,8 @@ public class TurnController : MonoBehaviour {
 			cs.GetComponent<Button>().interactable = false;
 			cs.gameObject.SetActive(false);
 		}
-
+		updateStatus.UpdateValues(kings);
+		playerStatus.EndOfTurn();
 		Invoke ("StartGame", 2);
 	}
 
@@ -126,13 +127,15 @@ public class TurnController : MonoBehaviour {
 	}
 
 	private IEnumerator EndGame() {
-		gameOver = true;
-		foreach(CardScript cs in cardsOnTable) {
-			cs.GetComponent<Button>().interactable = false;
+		if(gameOver == false) {
+			gameOver = true;
+			foreach(CardScript cs in cardsOnTable) {
+				cs.GetComponent<Button>().interactable = false;
+			}
+			updateStatus.UpdateValues(kings);
+			yield return new WaitForSeconds(2f);
+			gameManger.GameOver(kings);
 		}
-		updateStatus.UpdateValues(kings);
-		yield return new WaitForSeconds(2f);
-		gameManger.GameOver(kings);
 	}
 
 	private void EliminationRound() {

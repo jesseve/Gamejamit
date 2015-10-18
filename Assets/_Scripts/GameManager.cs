@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour {
 	void Awake() {
 		DontDestroyOnLoad(gameObject);
 		instance = this;
-		gameOver = GameObject.FindObjectOfType<GameOver>();
 	}
 
 	public void StartGame() {
@@ -40,8 +39,10 @@ public class GameManager : MonoBehaviour {
 		Button[] bs = GameObject.FindObjectsOfType<Button>();
 		foreach(Button b in bs)
 			b.interactable = false;
+
 		gameOver = GameObject.FindObjectOfType<GameOver>();
-		gameOver.UpdateValues();
+		if(gameOver != null)
+			gameOver.UpdateValues();
 	}
 
 	public static void PlayScream() {
