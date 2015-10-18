@@ -44,6 +44,7 @@ public class GameOver : MonoBehaviour {
 		for(int i = 0; i < transform.childCount; i++) {
 			transform.GetChild(i).gameObject.SetActive(true);
 		}
+		restartButton.interactable = true;
 		Color c = background.color;
 		c.a = 0;
 		background.color = c;
